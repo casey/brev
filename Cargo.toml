@@ -5,4 +5,4 @@ authors = ["Casey Rodarmor <casey@rodarmor.com>"]
 
 [dependencies]
 
-glob = "*"
+glob = "0.2.11"
