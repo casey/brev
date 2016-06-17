@@ -13,8 +13,7 @@ pub fn glob(pattern: &str) -> Vec<String> {
 }
 
 pub fn touch(path: &str) {
-  let result = std::fs::OpenOptions::new().create(true).open(path);
-  if let Err(err) = result {
+  if let Err(err) = std::fs::OpenOptions::new().create(true).append(true).open(path) {
     panic!("touch: {}", err)
   }
 }
@@ -31,8 +30,8 @@ pub fn rmdir(path: &str) {
   }
 }
 
-pub fn slurp(_: &str) {
-}
-
-pub fn dump(_: &str) {
+pub fn rm(path: &str) {
+  if let Err(err) = std::fs::remove_file(path) {
+    panic!("rm: {}", err);
+  }
 }

@@ -9,5 +9,8 @@ fn test_glob() {
   touch("tmp/b");
   touch("tmp/c");
   assert!(glob("tmp/*").len() == 3);
+  rm("tmp/a");
+  rm("tmp/b");
+  rm("tmp/c");
   rmdir("tmp");
 }
