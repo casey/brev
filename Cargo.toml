@@ -6,3 +6,4 @@ authors = ["Casey Rodarmor <casey@rodarmor.com>"]
 [dependencies]
 
 glob = "0.2.11"
+tempdir = "0.3"

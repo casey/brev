@@ -1,4 +1,4 @@
-# rus~~t~~h
+# brev
 
 Quick and dirty utility functions.
 
@@ -10,5 +10,14 @@ Since they don't return errors, they just panic if something goes wrong. For sim
 
 ## todo:
 
-- `slurp(path: &str) -> String` read the contents of a file
-- `dump(path: &str, String)` set the contents of a file
+- can I write a function that takes either bytes or a string?
+- change name to brev, lzy, a, _
+- use and re-export tempdir
+- use and re-export walkdir
+- `isfile(path)` check if path is a regular file
+- `isdir(path)` check if path is a directory
+- `cwd` get current working directory
+- `cd` change current working directory
+- `say` print something out
+- look through perl for useful stuff
+- unwrap or die with message
