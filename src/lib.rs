@@ -3,8 +3,6 @@ extern crate tempdir;
 
 use std::io::prelude::*;
 
-mod tests;
-
 pub fn tmpdir<S: AsRef<str>>(prefix: S) -> (tempdir::TempDir, String) {
   let tmp = tempdir::TempDir::new(prefix.as_ref()).unwrap_or_else(|err| panic!("tmpdir: failed to create temporary directory: {}", err));
   let path = tmp.path().to_str().unwrap_or_else(|| panic!("tmpdir: path was not valid UTF-8")).to_owned();
@@ -66,7 +64,7 @@ pub fn read<P: AsRef<std::path::Path>>(path: P) -> Vec<u8> {
     panic!("read: {}", err)
   }
 
- v
+  v
 }
 
 pub fn dump<P: AsRef<std::path::Path>, D: AsRef<[u8]>>(path: P, data: D) {
@@ -131,7 +129,20 @@ pub fn warn<D: std::fmt::Display>(d: D) {
   }
 }
 
-pub fn die<D: std::fmt::Display>(d: D) {
+pub fn die<D: std::fmt::Display>(d: D) -> ! {
   warn(d);
-  std::process::exit(-1);
+  std::process::exit(-1)
 }
+
+#[macro_export]
+macro_rules! die {
+  //($($arg:tt)*) => {writeln!(&mut std::io::stderr(), $($arg)*)};
+  ($($arg:tt)*) => {{
+    extern crate std;
+    use $crate::std::io::prelude::*;
+    let _ = writeln!(&mut std::io::stderr(), $($arg)*);
+    std::process::exit(-1)
+  }};
+}
+
+mod tests;

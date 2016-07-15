@@ -44,3 +44,11 @@ fn test_is() {
   assert!(isdir(&path));
   assert!(isfile(&(path.clone() + "/f")));
 }
+
+#[test]
+#[allow(unreachable_code)]
+fn test_macro_expansions() {
+  return;
+  die!("");
+  die!("{} {} {}", 1, 2, 3);
+}
