@@ -139,7 +139,7 @@ macro_rules! die {
   //($($arg:tt)*) => {writeln!(&mut std::io::stderr(), $($arg)*)};
   ($($arg:tt)*) => {{
     extern crate std;
-    use $crate::std::io::prelude::*;
+    use std::io::prelude::*;
     let _ = writeln!(&mut std::io::stderr(), $($arg)*);
     std::process::exit(-1)
   }};

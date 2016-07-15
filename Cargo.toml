@@ -1,6 +1,6 @@
 [package]
 name = "brev"
-version = "0.1.3"
+version = "0.1.4"
 authors = ["Casey Rodarmor <casey@rodarmor.com>"]
 description = "helpers for quick and dirty scripting"
 license = "WTFPL"
