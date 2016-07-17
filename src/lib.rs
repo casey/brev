@@ -135,14 +135,24 @@ pub fn die<D: std::fmt::Display>(d: D) -> ! {
 }
 
 #[macro_export]
-macro_rules! die {
-  //($($arg:tt)*) => {writeln!(&mut std::io::stderr(), $($arg)*)};
+macro_rules! warn {
   ($($arg:tt)*) => {{
     extern crate std;
     use std::io::prelude::*;
-    let _ = writeln!(&mut std::io::stderr(), $($arg)*);
+    if let Err(_) = writeln!(&mut std::io::stderr(), $($arg)*) {
+      std::process::exit(-1);
+    };
+  }};
+}
+
+#[macro_export]
+macro_rules! die {
+  ($($arg:tt)*) => {{
+    extern crate std;
+    warn!($($arg)*);
     std::process::exit(-1)
   }};
 }
+
 
 mod tests;
