@@ -43,6 +43,8 @@ fn test_is() {
   touch(path.clone() + "/f");
   assert!(isdir(&path));
   assert!(isfile(&(path.clone() + "/f")));
+  assert!(!isdir(&(path.clone() + "/none")));
+  assert!(!isfile(&(path.clone() + "/none")));
 }
 
 #[test]

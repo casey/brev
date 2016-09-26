@@ -108,14 +108,24 @@ pub fn can(command: &str) -> bool {
 pub fn isfile<P: AsRef<std::path::Path>>(path: P) -> bool {
   match std::fs::metadata(path) {
     Ok(metadata) => metadata.is_file(),
-    Err(err) => panic!("isfile: could not retrieve metadata: {}", err),
+    Err(err) => {
+      if let std::io::ErrorKind::NotFound = err.kind() {
+        return false;
+      };
+      panic!("isfile: could not retrieve metadata: {}", err);
+    }
   }
 }
 
 pub fn isdir<P: AsRef<std::path::Path>>(path: P) -> bool {
   match std::fs::metadata(path) {
     Ok(metadata) => metadata.is_dir(),
-    Err(err) => panic!("isfile: could not retrieve metadata: {}", err),
+    Err(err) => {
+      if let std::io::ErrorKind::NotFound = err.kind() {
+        return false;
+      };
+      panic!("isfile: could not retrieve metadata: {}", err);
+    }
   }
 }
 
