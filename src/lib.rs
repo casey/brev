@@ -2,6 +2,7 @@ extern crate glob;
 extern crate tempdir;
 
 use std::io::prelude::*;
+use std::{env, fmt, io, process, path, fs};
 
 pub fn tmpdir<S: AsRef<str>>(prefix: S) -> (tempdir::TempDir, String) {
   let tmp = tempdir::TempDir::new(prefix.as_ref()).unwrap_or_else(|err| panic!("tmpdir: failed to create temporary directory: {}", err));
@@ -19,32 +20,32 @@ pub fn glob<P: AsRef<str>>(pattern: P) -> Vec<String> {
   }
 }
 
-pub fn touch<P: AsRef<std::path::Path>>(path: P) {
-  if let Err(err) = std::fs::OpenOptions::new().create(true).append(true).open(path) {
+pub fn touch<P: AsRef<path::Path>>(path: P) {
+  if let Err(err) = fs::OpenOptions::new().create(true).append(true).open(path) {
     panic!("touch: {}", err)
   }
 }
 
-pub fn mkdir<P: AsRef<std::path::Path>>(path: P) {
-  if let Err(err) = std::fs::create_dir(path) {
+pub fn mkdir<P: AsRef<path::Path>>(path: P) {
+  if let Err(err) = fs::create_dir(path) {
     panic!("mkdir: {}", err)
   }
 }
 
-pub fn rmdir<P: AsRef<std::path::Path>>(path: P) {
-  if let Err(err) = std::fs::remove_dir(path) {
+pub fn rmdir<P: AsRef<path::Path>>(path: P) {
+  if let Err(err) = fs::remove_dir(path) {
     panic!("rmdir: {}", err)
   }
 }
 
-pub fn rm<P: AsRef<std::path::Path>>(path: P) {
-  if let Err(err) = std::fs::remove_file(path) {
+pub fn rm<P: AsRef<path::Path>>(path: P) {
+  if let Err(err) = fs::remove_file(path) {
     panic!("rm: {}", err);
   }
 }
 
-pub fn slurp<P: AsRef<std::path::Path>>(path: P) -> String {
-  let mut file = std::fs::File::open(path).unwrap_or_else(|err| panic!("slurp {}", err));
+pub fn slurp<P: AsRef<path::Path>>(path: P) -> String {
+  let mut file = fs::File::open(path).unwrap_or_else(|err| panic!("slurp {}", err));
 
   let mut s = String::new();
 
@@ -55,8 +56,8 @@ pub fn slurp<P: AsRef<std::path::Path>>(path: P) -> String {
   s
 }
 
-pub fn read<P: AsRef<std::path::Path>>(path: P) -> Vec<u8> {
-  let mut file = std::fs::File::open(path).unwrap_or_else(|err| panic!("read {}", err));
+pub fn read<P: AsRef<path::Path>>(path: P) -> Vec<u8> {
+  let mut file = fs::File::open(path).unwrap_or_else(|err| panic!("read {}", err));
 
   let mut v = vec![];
 
@@ -67,31 +68,31 @@ pub fn read<P: AsRef<std::path::Path>>(path: P) -> Vec<u8> {
   v
 }
 
-pub fn dump<P: AsRef<std::path::Path>, D: AsRef<[u8]>>(path: P, data: D) {
+pub fn dump<P: AsRef<path::Path>, D: AsRef<[u8]>>(path: P, data: D) {
   let bytes = data.as_ref();
   let count = bytes.len();
-  let mut file = std::fs::File::create(path).unwrap_or_else(|err| panic!("dump {}", err));
+  let mut file = fs::File::create(path).unwrap_or_else(|err| panic!("dump {}", err));
   match file.write(bytes) {
     Err(err) => panic!("dump: {}", err),
     Ok(n) => if n != count { panic!("dump: only {} of {} bytes written", n, count); }
   }
 }
 
-pub fn cd<P: AsRef<std::path::Path>>(path: P) {
-  if let Err(err) = std::env::set_current_dir(path) {
+pub fn cd<P: AsRef<path::Path>>(path: P) {
+  if let Err(err) = env::set_current_dir(path) {
     panic!("cd: {}", err)
   }
 }
 
 pub fn cwd() -> String {
-  match std::env::current_dir() {
+  match env::current_dir() {
     Ok(pathbuf) => pathbuf.to_str().unwrap_or_else(|| panic!("cwd: cwd was not a valid UTF-8 string")).to_string(),
     Err(err) => panic!("cwd: {}", err),
   }
 }
 
 pub fn can(command: &str) -> bool {
-  let paths = match std::env::var_os("PATH") {
+  let paths = match env::var_os("PATH") {
     Some(os_paths) => os_paths.to_str().unwrap_or_else(|| panic!("can: PATH environment variable is not valid UTF-8")).to_owned(),
     None => panic!("can: PATH environment variable is not set"),
   };
@@ -105,11 +106,11 @@ pub fn can(command: &str) -> bool {
   false
 }
 
-pub fn isfile<P: AsRef<std::path::Path>>(path: P) -> bool {
-  match std::fs::metadata(path) {
+pub fn isfile<P: AsRef<path::Path>>(path: P) -> bool {
+  match fs::metadata(path) {
     Ok(metadata) => metadata.is_file(),
     Err(err) => {
-      if let std::io::ErrorKind::NotFound = err.kind() {
+      if let io::ErrorKind::NotFound = err.kind() {
         return false;
       };
       panic!("isfile: could not retrieve metadata: {}", err);
@@ -117,11 +118,11 @@ pub fn isfile<P: AsRef<std::path::Path>>(path: P) -> bool {
   }
 }
 
-pub fn isdir<P: AsRef<std::path::Path>>(path: P) -> bool {
-  match std::fs::metadata(path) {
+pub fn isdir<P: AsRef<path::Path>>(path: P) -> bool {
+  match fs::metadata(path) {
     Ok(metadata) => metadata.is_dir(),
     Err(err) => {
-      if let std::io::ErrorKind::NotFound = err.kind() {
+      if let io::ErrorKind::NotFound = err.kind() {
         return false;
       };
       panic!("isfile: could not retrieve metadata: {}", err);
@@ -129,19 +130,19 @@ pub fn isdir<P: AsRef<std::path::Path>>(path: P) -> bool {
   }
 }
 
-pub fn say<D: std::fmt::Display> (d: D) {
+pub fn say<D: fmt::Display> (d: D) {
   println!("{}", d)
 }
 
-pub fn warn<D: std::fmt::Display>(d: D) {
-  if let Err(err) = writeln!(&mut std::io::stderr(), "{}", d) {
+pub fn warn<D: fmt::Display>(d: D) {
+  if let Err(err) = writeln!(&mut io::stderr(), "{}", d) {
     panic!("warn: {}", err);
   }
 }
 
-pub fn die<D: std::fmt::Display>(d: D) -> ! {
+pub fn die<D: fmt::Display>(d: D) -> ! {
   warn(d);
-  std::process::exit(-1)
+  process::exit(-1)
 }
 
 #[macro_export]
