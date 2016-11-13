@@ -54,3 +54,9 @@ fn test_macro_expansions() {
   die!("");
   die!("{} {} {}", 1, 2, 3);
 }
+
+#[test]
+fn test_empty() {
+  let v: Vec<i32> = empty();
+  assert!(v.is_empty());
+}

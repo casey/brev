@@ -2,7 +2,11 @@ extern crate glob;
 extern crate tempdir;
 
 use std::io::prelude::*;
-use std::{env, fmt, io, process, path, fs};
+use std::{env, fmt, io, process, path, fs, iter};
+
+pub fn empty<T, C: iter::FromIterator<T>>() -> C {
+  iter::empty().collect()
+}
 
 pub fn tmpdir<S: AsRef<str>>(prefix: S) -> (tempdir::TempDir, String) {
   let tmp = tempdir::TempDir::new(prefix.as_ref()).unwrap_or_else(|err| panic!("tmpdir: failed to create temporary directory: {}", err));
