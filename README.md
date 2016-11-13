@@ -7,3 +7,5 @@ Rust uses explicit error handling, and in most cases this encourages careful cod
 Brev provides utility functions that allow you to write simple scripts in rust quickly.
 
 Since they don't return errors, they just panic if something goes wrong. For simple scripts that are run interactively, this is might good enough.
+
+And, if you do need to handle errors, you can copy pasta from brev as a starting point.
