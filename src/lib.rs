@@ -134,17 +134,17 @@ pub fn isdir<P: AsRef<path::Path>>(path: P) -> bool {
   }
 }
 
-pub fn say<D: fmt::Display> (d: D) {
+pub fn say(d: &fmt::Display) {
   println!("{}", d)
 }
 
-pub fn warn<D: fmt::Display>(d: D) {
+pub fn warn(d: &fmt::Display) {
   if let Err(err) = writeln!(&mut io::stderr(), "{}", d) {
     panic!("warn: {}", err);
   }
 }
 
-pub fn die<D: fmt::Display>(d: D) -> ! {
+pub fn die(d: &fmt::Display) -> ! {
   warn(d);
   process::exit(-1)
 }
