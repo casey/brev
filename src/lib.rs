@@ -138,6 +138,12 @@ pub fn say(d: &fmt::Display) {
   println!("{}", d)
 }
 
+pub fn out(d: &fmt::Display) {
+  if let Err(err) = write!(&mut io::stdout(), "{}", d) {
+    panic!("warn: {}", err);
+  }
+}
+
 pub fn err(d: &fmt::Display) {
   if let Err(err) = write!(&mut io::stderr(), "{}", d) {
     panic!("warn: {}", err);
