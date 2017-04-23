@@ -60,3 +60,45 @@ fn test_empty() {
   let v: Vec<i32> = empty();
   assert!(v.is_empty());
 }
+
+#[test]
+fn test_output_success() {
+  let mut cmd = process::Command::new("printf");
+  cmd.arg("hello");
+  match output(cmd) {
+    Ok(ref string) if string == "hello" => {},
+    result => panic!("expected code 200 output error but got: {:?}", result),
+  }
+}
+
+#[test]
+fn test_output_code() {
+  let mut cmd = process::Command::new("sh");
+  cmd.arg("-c").arg("exit 200");
+  match output(cmd) {
+    Err(OutputError::Code(200)) => {},
+    result => panic!("expected code 200 output error but got: {:?}", result),
+  }
+}
+
+#[test]
+fn test_output_io_error() {
+  // Please do not create utility with the name `abazazzle`,
+  // as it might cause the following invocation to succeed,
+  // and thus this test to fail
+  let cmd = process::Command::new("abazazzle");
+  match output(cmd) {
+    Err(OutputError::Io(_)) => {},
+    result => panic!("expected io output error but got: {:?}", result),
+  }
+}
+
+#[test]
+fn test_output_utf8_error() {
+  let mut cmd = process::Command::new("printf");
+  cmd.arg("\\xFF");
+  match output(cmd) {
+    Err(OutputError::Utf8(_)) => {},
+    result => panic!("expected utf8 output error but got: {:?}", result),
+  }
+}

@@ -4,6 +4,10 @@ extern crate tempdir;
 use std::io::prelude::*;
 use std::{env, fmt, io, process, path, fs, iter};
 
+mod output;
+
+pub use output::{output, OutputError, signal_from_exit_status};
+
 pub fn home() -> path::PathBuf {
   env::home_dir().unwrap_or_else(
     || panic!("home: failed to get home directory")
