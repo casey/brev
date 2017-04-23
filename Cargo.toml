@@ -1,7 +1,7 @@
 [package]
 name        = "brev"
 description = "helpers for quick and dirty scripting"
-version     = "0.1.9"
+version     = "0.1.10"
 authors     = ["Casey Rodarmor <casey@rodarmor.com>"]
 license     = "WTFPL OR MIT OR Apache-2.0"
 repository  = "https://github.com/casey/brev"
