@@ -5,8 +5,23 @@ use std::io::prelude::*;
 use std::{env, fmt, io, process, path, fs, iter};
 
 mod output;
+mod status;
 
-pub use output::{output, OutputError, signal_from_exit_status};
+pub use output::{output, OutputError};
+pub use status::{status, StatusError};
+
+#[cfg(unix)]
+pub fn signal_from_exit_status(exit_status: process::ExitStatus) -> Option<i32> {
+  use std::os::unix::process::ExitStatusExt;
+  exit_status.signal()
+}
+
+#[cfg(windowsj)]
+pub fn signal_from_exit_status(_exit_status: process::ExitStatus) -> Option<i32> {
+  // The rust standard library does not expose a way to extract a signal
+  // from a process exit status, so just return None
+  None
+}
 
 pub fn home() -> path::PathBuf {
   env::home_dir().unwrap_or_else(

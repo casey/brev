@@ -1,4 +1,4 @@
-use super::std;
+use super::{std, signal_from_exit_status};
 
 use super::std::{io, process, fmt};
 
@@ -28,19 +28,6 @@ impl Display for OutputError {
       OutputError::Utf8(ref err) => write!(f, "Could not convert process stdout to UTF-8: {}", err),
     }
   }
-}
-
-#[cfg(unix)]
-pub fn signal_from_exit_status(exit_status: process::ExitStatus) -> Option<i32> {
-  use std::os::unix::process::ExitStatusExt;
-  exit_status.signal()
-}
-
-#[cfg(windows)]
-pub fn signal_from_exit_status(_exit_status: process::ExitStatus) -> Option<i32> {
-  // The rust standard library does not expose a way to extract a signal
-  // from a process exit status, so just return None
-  None
 }
 
 /// Run a command and return the data it wrote to stdout as a string
