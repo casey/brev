@@ -16,7 +16,7 @@ pub fn signal_from_exit_status(exit_status: process::ExitStatus) -> Option<i32> 
   exit_status.signal()
 }
 
-#[cfg(windowsj)]
+#[cfg(windows)]
 pub fn signal_from_exit_status(_exit_status: process::ExitStatus) -> Option<i32> {
   // The rust standard library does not expose a way to extract a signal
   // from a process exit status, so just return None
