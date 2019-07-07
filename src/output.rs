@@ -1,6 +1,6 @@
-use super::{std, signal_from_exit_status};
+use super::{signal_from_exit_status, std};
 
-use super::std::{io, process, fmt};
+use super::std::{fmt, io, process};
 
 use std::fmt::Display;
 
@@ -46,18 +46,18 @@ pub fn output(mut command: process::Command) -> Result<String, OutputError> {
       }
       match std::str::from_utf8(&output.stdout) {
         Err(error) => Err(OutputError::Utf8(error)),
-        Ok(utf8) => {
-          Ok(if utf8.ends_with('\n') {
-            &utf8[0..utf8.len()-1]
+        Ok(utf8) => Ok(
+          if utf8.ends_with('\n') {
+            &utf8[0..utf8.len() - 1]
           } else if utf8.ends_with("\r\n") {
-            &utf8[0..utf8.len()-2]
+            &utf8[0..utf8.len() - 2]
           } else {
             utf8
-          }.to_string())
-        }
+          }
+          .to_string(),
+        ),
       }
     }
     Err(io_error) => Err(OutputError::Io(io_error)),
   }
 }
-

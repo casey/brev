@@ -21,8 +21,8 @@ fn test_dump() {
 #[test]
 fn test_read() {
   let (_tmp, path) = tmpdir("test-glob");
-  dump(path.clone() + "/foo", vec![1,2,3]);
-  assert!(read(path.clone() + "/foo") == vec![1,2,3]);
+  dump(path.clone() + "/foo", vec![1, 2, 3]);
+  assert!(read(path.clone() + "/foo") == vec![1, 2, 3]);
 }
 
 #[test]
@@ -66,7 +66,7 @@ fn test_output_success() {
   let mut cmd = process::Command::new("printf");
   cmd.arg("hello");
   match output(cmd) {
-    Ok(ref string) if string == "hello" => {},
+    Ok(ref string) if string == "hello" => {}
     result => panic!("expected output success but got: {:?}", result),
   }
 }
@@ -76,7 +76,7 @@ fn test_output_code() {
   let mut cmd = process::Command::new("sh");
   cmd.arg("-c").arg("exit 200");
   match output(cmd) {
-    Err(OutputError::Code(200)) => {},
+    Err(OutputError::Code(200)) => {}
     result => panic!("expected code 200 output error but got: {:?}", result),
   }
 }
@@ -88,7 +88,7 @@ fn test_output_io_error() {
   // and thus this test to fail
   let cmd = process::Command::new("abazazzle");
   match output(cmd) {
-    Err(OutputError::Io(_)) => {},
+    Err(OutputError::Io(_)) => {}
     result => panic!("expected io output error but got: {:?}", result),
   }
 }
@@ -96,13 +96,13 @@ fn test_output_io_error() {
 #[cfg(unix)]
 #[test]
 fn test_output_utf8_error() {
-  use std::os::unix::ffi::OsStringExt;
   use std::ffi::OsString;
+  use std::os::unix::ffi::OsStringExt;
 
   let mut cmd = process::Command::new("printf");
   cmd.arg(OsString::from_vec(b"\xFF".to_vec()));
   match output(cmd) {
-    Err(OutputError::Utf8(_)) => {},
+    Err(OutputError::Utf8(_)) => {}
     result => panic!("expected utf8 output error but got: {:?}", result),
   }
 }
@@ -121,7 +121,7 @@ fn test_status_code() {
   let mut cmd = process::Command::new("sh");
   cmd.arg("-c").arg("exit 200");
   match status(cmd) {
-    Err(StatusError::Code(200)) => {},
+    Err(StatusError::Code(200)) => {}
     result => panic!("expected code 200 status error but got: {:?}", result),
   }
 }
@@ -133,7 +133,7 @@ fn test_status_io_error() {
   // and thus this test to fail
   let cmd = process::Command::new("abazazzle");
   match status(cmd) {
-    Err(StatusError::Io(_)) => {},
+    Err(StatusError::Io(_)) => {}
     result => panic!("expected io status error but got: {:?}", result),
   }
 }

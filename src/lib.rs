@@ -2,7 +2,7 @@ extern crate glob;
 extern crate tempfile;
 
 use std::io::prelude::*;
-use std::{env, fmt, io, process, path, fs, iter};
+use std::{env, fmt, fs, io, iter, path, process};
 
 mod output;
 mod status;
@@ -24,9 +24,7 @@ pub fn signal_from_exit_status(_exit_status: process::ExitStatus) -> Option<i32>
 }
 
 pub fn home() -> path::PathBuf {
-  env::home_dir().unwrap_or_else(
-    || panic!("home: failed to get home directory")
-  )
+  env::home_dir().unwrap_or_else(|| panic!("home: failed to get home directory"))
 }
 
 pub fn empty<T, C: iter::FromIterator<T>>() -> C {
@@ -34,8 +32,15 @@ pub fn empty<T, C: iter::FromIterator<T>>() -> C {
 }
 
 pub fn tmpdir<S: AsRef<str>>(prefix: S) -> (tempfile::TempDir, String) {
-  let tmp = tempfile::Builder::new().prefix(prefix.as_ref()).tempdir().unwrap_or_else(|err| panic!("tmpdir: failed to create temporary directory: {}", err));
-  let path = tmp.path().to_str().unwrap_or_else(|| panic!("tmpdir: path was not valid UTF-8")).to_owned();
+  let tmp = tempfile::Builder::new()
+    .prefix(prefix.as_ref())
+    .tempdir()
+    .unwrap_or_else(|err| panic!("tmpdir: failed to create temporary directory: {}", err));
+  let path = tmp
+    .path()
+    .to_str()
+    .unwrap_or_else(|| panic!("tmpdir: path was not valid UTF-8"))
+    .to_owned();
   return (tmp, path);
 }
 
@@ -103,7 +108,11 @@ pub fn dump<P: AsRef<path::Path>, D: AsRef<[u8]>>(path: P, data: D) {
   let mut file = fs::File::create(path).unwrap_or_else(|err| panic!("dump {}", err));
   match file.write(bytes) {
     Err(err) => panic!("dump: {}", err),
-    Ok(n) => if n != count { panic!("dump: only {} of {} bytes written", n, count); }
+    Ok(n) => {
+      if n != count {
+        panic!("dump: only {} of {} bytes written", n, count);
+      }
+    }
   }
 }
 
@@ -115,14 +124,20 @@ pub fn cd<P: AsRef<path::Path>>(path: P) {
 
 pub fn cwd() -> String {
   match env::current_dir() {
-    Ok(pathbuf) => pathbuf.to_str().unwrap_or_else(|| panic!("cwd: cwd was not a valid UTF-8 string")).to_string(),
+    Ok(pathbuf) => pathbuf
+      .to_str()
+      .unwrap_or_else(|| panic!("cwd: cwd was not a valid UTF-8 string"))
+      .to_string(),
     Err(err) => panic!("cwd: {}", err),
   }
 }
 
 pub fn can(command: &str) -> bool {
   let paths = match env::var_os("PATH") {
-    Some(os_paths) => os_paths.to_str().unwrap_or_else(|| panic!("can: PATH environment variable is not valid UTF-8")).to_owned(),
+    Some(os_paths) => os_paths
+      .to_str()
+      .unwrap_or_else(|| panic!("can: PATH environment variable is not valid UTF-8"))
+      .to_owned(),
     None => panic!("can: PATH environment variable is not set"),
   };
 
@@ -205,6 +220,5 @@ macro_rules! die {
     std::process::exit(-1)
   }};
 }
-
 
 mod tests;
