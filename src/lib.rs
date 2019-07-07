@@ -1,5 +1,5 @@
 extern crate glob;
-extern crate tempdir;
+extern crate tempfile;
 
 use std::io::prelude::*;
 use std::{env, fmt, io, process, path, fs, iter};
@@ -33,8 +33,8 @@ pub fn empty<T, C: iter::FromIterator<T>>() -> C {
   iter::empty().collect()
 }
 
-pub fn tmpdir<S: AsRef<str>>(prefix: S) -> (tempdir::TempDir, String) {
-  let tmp = tempdir::TempDir::new(prefix.as_ref()).unwrap_or_else(|err| panic!("tmpdir: failed to create temporary directory: {}", err));
+pub fn tmpdir<S: AsRef<str>>(prefix: S) -> (tempfile::TempDir, String) {
+  let tmp = tempfile::Builder::new().prefix(prefix.as_ref()).tempdir().unwrap_or_else(|err| panic!("tmpdir: failed to create temporary directory: {}", err));
   let path = tmp.path().to_str().unwrap_or_else(|| panic!("tmpdir: path was not valid UTF-8")).to_owned();
   return (tmp, path);
 }
