@@ -1,3 +1,4 @@
+extern crate dirs;
 extern crate glob;
 extern crate tempfile;
 
@@ -24,7 +25,7 @@ pub fn signal_from_exit_status(_exit_status: process::ExitStatus) -> Option<i32>
 }
 
 pub fn home() -> path::PathBuf {
-  env::home_dir().unwrap_or_else(|| panic!("home: failed to get home directory"))
+  dirs::home_dir().unwrap_or_else(|| panic!("home: failed to get home directory"))
 }
 
 pub fn empty<T, C: iter::FromIterator<T>>() -> C {
