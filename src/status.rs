@@ -1,6 +1,6 @@
-use super::{signal_from_exit_status};
+use super::signal_from_exit_status;
 
-use super::std::{io, process, fmt};
+use super::std::{fmt, io, process};
 
 use std::fmt::Display;
 
@@ -47,4 +47,3 @@ pub fn status(mut command: process::Command) -> Result<(), StatusError> {
     Err(io_error) => Err(StatusError::Io(io_error)),
   }
 }
-
